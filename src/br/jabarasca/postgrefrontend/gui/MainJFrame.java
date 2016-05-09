@@ -52,10 +52,17 @@ public class MainJFrame extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		
-		contentPane.add(new AppPanel(this));
+		contentPane.add(new ConnectPanel(this));
 		
 		setContentPane(contentPane);
 		
+	}
+	
+	public void changeScreenPane(JPanel jpanel) {
+		contentPane.removeAll();
+		contentPane.add(jpanel);
+		contentPane.revalidate(); 
+		contentPane.repaint();
 	}
 
 }

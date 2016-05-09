@@ -3,18 +3,13 @@ package br.jabarasca.postgrefrontend.gui;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
-import java.awt.FlowLayout;
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.Font;
-import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 
-public class AppPanel extends JPanel {
+public class ConnectPanel extends JPanel {
 
 	private MainJFrame mainFrame;
 	private final int INITIAL_Y_START = 20;
@@ -22,10 +17,11 @@ public class AppPanel extends JPanel {
 	private int lastXPosition;
 	private JTextField portNumberTextField;
 	private JTextField addressTextField;
+	private JButton connectButton;
 	/**
 	 * Create the panel.
 	 */
-	public AppPanel(MainJFrame mainFrame) {
+	public ConnectPanel(MainJFrame mainFrame) {
 		this.mainFrame = mainFrame;
 		setLayout(null);
 		
@@ -36,24 +32,7 @@ public class AppPanel extends JPanel {
 		labelTitle.setBounds(getCenterXStart(300), lastYPosition, 300, 30);
 		add(labelTitle);
 		
-		JLabel labelConnDetails = new JLabel(GuiStrings.CONN_DETAILS_LABEL);
-		labelConnDetails.setFont(new Font(GuiStrings.APP_FONT_STYLE, Font.BOLD, 18));
-		lastYPosition += 60;
-		labelConnDetails.setBounds(getCenterXStart(150), lastYPosition, 150, 20);
-		add(labelConnDetails);
-		
-		JRadioButton defaultConnRadio = new JRadioButton(GuiStrings.LOCAL_CONN_LABEL);
-		defaultConnRadio.setFont(new Font(GuiStrings.APP_FONT_STYLE, Font.PLAIN, 16));
-		lastYPosition += 60;
-		defaultConnRadio.setBounds(getCenterXStart(240)/4, lastYPosition, 240, 23);
-		add(defaultConnRadio);
-		
-		JRadioButton newConnRadio = new JRadioButton(GuiStrings.NEW_CONN_LABEL);
-		newConnRadio.setFont(new Font(GuiStrings.APP_FONT_STYLE, Font.PLAIN, 16));
-		newConnRadio.setBounds((getCenterXStart(240)/4)*7, lastYPosition, 240, 23);
-		add(newConnRadio);
-		
-		lastYPosition += 60;
+		lastYPosition += 120;
 		lastXPosition = 80;
 		JLabel connAddressLabel = new JLabel(GuiStrings.ADDRESS_LABEL);
 		connAddressLabel.setBounds(lastXPosition, lastYPosition, 70, 15);
@@ -78,11 +57,22 @@ public class AppPanel extends JPanel {
 		add(portNumberTextField);
 		portNumberTextField.setColumns(10);
 		
-		lastYPosition += 60; 
-		JButton connectButton = new JButton(GuiStrings.CONNECT_LABEL);
+		lastYPosition += 100; 
+		connectButton = new JButton(GuiStrings.CONNECT_LABEL);
 		connectButton.setBounds(getCenterXStart(117), lastYPosition, 117, 25);
 		add(connectButton);
 
+		setConnectButtonListener();
+	}
+	
+	private void setConnectButtonListener() {
+		ActionListener actionConnect = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				mainFrame.changeScreenPane(new SelectPanel());
+			}
+		};
+		connectButton.addActionListener(actionConnect);
 	}
 	
 	private int getCenterXStart(int componentWidth) {
