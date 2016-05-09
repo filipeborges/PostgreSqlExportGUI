@@ -13,7 +13,7 @@ public class MainJFrame extends JFrame {
 
 	private JPanel contentPane;
 	public final int X_RESOLUTION = 640;
-	public final int Y_RESOLUTION = 480;
+	public final int Y_RESOLUTION = 360;
 	public final int X_CENTER = X_RESOLUTION / 2;
 	
 	private int screenStartX;
