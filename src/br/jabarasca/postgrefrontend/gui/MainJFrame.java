@@ -65,4 +65,7 @@ public class MainJFrame extends JFrame {
 		contentPane.repaint();
 	}
 
+	public int getCenterXStart(int componentWidth) {
+		return X_CENTER - (componentWidth/2);
+	}
 }

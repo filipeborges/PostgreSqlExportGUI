@@ -13,4 +13,6 @@ public class GuiStrings {
 	public static final String PORT_NUMBER_LABEL = "Port:";
 	public static final String ADDRESS_LABEL = "Address:";
 	public static final String CONNECT_LABEL = "Connect";
+	public static final String SELECT_TITLE_LABEL = "Select Database";
+	public static final String EXPORT_LABEL = "Export";
 }

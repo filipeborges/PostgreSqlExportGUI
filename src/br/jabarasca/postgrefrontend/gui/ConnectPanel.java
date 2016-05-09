@@ -3,6 +3,9 @@ package br.jabarasca.postgrefrontend.gui;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+
+import br.jabarasca.postgrefrontend.Controller;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Font;
@@ -29,7 +32,7 @@ public class ConnectPanel extends JPanel {
 		labelTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		labelTitle.setFont(new Font(GuiStrings.APP_FONT_STYLE, Font.BOLD, 24));
 		lastYPosition += INITIAL_Y_START;
-		labelTitle.setBounds(getCenterXStart(300), lastYPosition, 300, 30);
+		labelTitle.setBounds(mainFrame.getCenterXStart(300), lastYPosition, 300, 30);
 		add(labelTitle);
 		
 		lastYPosition += 120;
@@ -59,7 +62,7 @@ public class ConnectPanel extends JPanel {
 		
 		lastYPosition += 100; 
 		connectButton = new JButton(GuiStrings.CONNECT_LABEL);
-		connectButton.setBounds(getCenterXStart(117), lastYPosition, 117, 25);
+		connectButton.setBounds(mainFrame.getCenterXStart(117), lastYPosition, 117, 25);
 		add(connectButton);
 
 		setConnectButtonListener();
@@ -69,13 +72,12 @@ public class ConnectPanel extends JPanel {
 		ActionListener actionConnect = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				mainFrame.changeScreenPane(new SelectPanel());
+				Controller controller = new Controller(mainFrame);
+				controller.connect();
 			}
 		};
 		connectButton.addActionListener(actionConnect);
 	}
 	
-	private int getCenterXStart(int componentWidth) {
-		return mainFrame.X_CENTER - (componentWidth/2);
-	}
+	
 }
