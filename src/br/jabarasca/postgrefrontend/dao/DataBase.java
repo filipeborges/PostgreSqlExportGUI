@@ -16,6 +16,7 @@ public class DataBase {
 	private String dbPort;
 	private String dbAdminName;
 	private String dbAdminPwd;
+	private boolean isDbConnEstablished = false;
 	
 	public DataBase(String dbAddress, String dbPort, String adminName, String password) {
 		this.dbAddress = dbAddress;
@@ -32,12 +33,16 @@ public class DataBase {
 		try {
 			dbConn = DriverManager.getConnection(String.format(formatUrlServer, dbAddress, dbPort),
 					dbAdminName, dbAdminPwd);
+			isDbConnEstablished = true;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Conectou!");
 	}
 
+	public boolean isDbConnEstablished() {
+		return isDbConnEstablished;
+	}
+	
 	//public String[] getAllDataBases() {
 	//final String SQL_GET_DATABASES = "SELECT datname FROM pg_database;";
 
@@ -46,7 +51,6 @@ public class DataBase {
 	public void closeConnection() {
 		try {
 			dbConn.close();
-			System.out.println("Fechou!");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

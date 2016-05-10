@@ -6,6 +6,7 @@ import java.awt.EventQueue;
 import java.awt.Toolkit;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -34,6 +35,10 @@ public class MainJFrame extends JFrame {
 		});
 	}
 
+	public void setMessageDialog(String message) {
+		JOptionPane.showMessageDialog(this, message);
+	}
+	
 	private void setScreenStartProperties() {
 		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
 		screenStartX = (dimension.width/2) - (X_RESOLUTION/2);
