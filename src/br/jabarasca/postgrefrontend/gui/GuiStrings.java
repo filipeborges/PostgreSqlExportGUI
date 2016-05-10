@@ -15,4 +15,6 @@ public class GuiStrings {
 	public static final String CONNECT_LABEL = "Connect";
 	public static final String SELECT_TITLE_LABEL = "Select Database";
 	public static final String EXPORT_LABEL = "Export";
+	public static final String USER_NAME_LABEL = "PG Admin Username:";
+	public static final String USER_PWD_LABEL = "Password:";
 }
