@@ -3,6 +3,7 @@ package br.jabarasca.postgrefrontend.gui;
 import javax.swing.JPanel;
 
 import java.awt.Font;
+import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -19,8 +20,9 @@ public class SelectPanel extends JPanel {
 	private int lastYPosition;
 	private final int INITIAL_Y_START = 20;
 	private MainJFrame mainFrame;
+	private JComboBox<String> comboBox;
 	
-	public SelectPanel(MainJFrame mainFrame) {
+	public SelectPanel(MainJFrame mainFrame, List<String> dbNames) {
 		this.mainFrame = mainFrame;
 		setLayout(null);
 		
@@ -32,7 +34,7 @@ public class SelectPanel extends JPanel {
 		add(titleLabel);
 		
 		lastYPosition += 60;
-		JComboBox comboBox = new JComboBox();
+		comboBox = new JComboBox<String>();
 		comboBox.setBounds(mainFrame.getCenterXStart(400), lastYPosition, 400, 30);
 		add(comboBox);
 		
@@ -46,6 +48,16 @@ public class SelectPanel extends JPanel {
 		btnNewButton.setBounds(mainFrame.getCenterXStart(117), lastYPosition, 117, 25);
 		add(btnNewButton);
 
-		
+		setDbNames(dbNames);
+	}
+	
+	private void setDbNames(List<String> dbNames) {
+		String dbName;
+		for(int i = 0; i < dbNames.size(); i++) {
+			dbName = dbNames.get(i);
+			if(dbName != null) {
+				comboBox.addItem(dbName);
+			}
+		}
 	}
 }

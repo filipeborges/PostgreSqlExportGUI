@@ -18,4 +18,5 @@ public class GuiStrings {
 	public static final String USER_NAME_LABEL = "PG Admin Username:";
 	public static final String USER_PWD_LABEL = "Password:";
 	public static final String DB_CONN_FAIL = "Database connection failed!";
+	public static final String GET_DB_NAMES_FAIL = "Failed to get Databases!";
 }

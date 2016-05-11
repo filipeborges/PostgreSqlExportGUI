@@ -2,7 +2,10 @@ package br.jabarasca.postgrefrontend.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DataBase {
 
@@ -43,10 +46,21 @@ public class DataBase {
 		return isDbConnEstablished;
 	}
 	
-	//public String[] getAllDataBases() {
-	//final String SQL_GET_DATABASES = "SELECT datname FROM pg_database;";
-
-	//}
+	public List<String> getAllDataBases() {
+		final String SQL_GET_DATABASES = "SELECT datname FROM pg_database;";
+		List<String> databaseNames = new ArrayList<String>();
+		try {
+			ResultSet result = dbConn.prepareStatement(SQL_GET_DATABASES).executeQuery();
+			while(result.next()) {
+				String dbName = result.getString(1);
+				databaseNames.add(dbName);
+			}
+			return databaseNames;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	public void closeConnection() {
 		try {
