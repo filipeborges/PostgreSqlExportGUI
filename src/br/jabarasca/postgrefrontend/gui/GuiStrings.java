@@ -21,4 +21,5 @@ public class GuiStrings {
 	public static final String GET_DB_NAMES_FAIL = "Failed to get Databases!";
 	public static final String DEFAULT_COMBO_VALUE = "Select...";
 	public static final String SELECT_VALID_DB = "Select a valid Database!";
+	public static final String EXPORT_DB_FAIL = "Error on export Database!";
 }

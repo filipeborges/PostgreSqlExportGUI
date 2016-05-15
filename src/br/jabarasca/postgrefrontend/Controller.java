@@ -44,23 +44,16 @@ public class Controller {
 	public void export(String dbName) {
 		if(dbName.length() > 0) { 
 			db.connectToSpecificDB(dbName);
-			//List<String> dbTables = db.getAllTablesFromConnectedDB();
 			String outputScript = db.getTablesDDLFromConnectedDB();
-			SelectPanel selectPanel = (SelectPanel)mainFrame.getCurrentScreenPanel();
-			selectPanel.setTextAreaValue(outputScript);
+			if(outputScript == null) {
+				mainFrame.setMessageDialog(GuiStrings.EXPORT_DB_FAIL);
+			} else {
+				SelectPanel selectPanel = (SelectPanel)mainFrame.getCurrentScreenPanel();
+				selectPanel.setTextAreaValue(outputScript);
+			}
 			db.closeConnection();
 		} else {
 			mainFrame.setMessageDialog(GuiStrings.SELECT_VALID_DB);
 		}
-	}
-	
-	private String getFormattedScript(List<String> scriptData) {
-		String formattedScript = "";
-		
-		for(int i = 0; i < scriptData.size(); i++) {
-			formattedScript += String.format("%s\n", scriptData.get(i));
-		}
-		
-		return formattedScript;
 	}
 }
