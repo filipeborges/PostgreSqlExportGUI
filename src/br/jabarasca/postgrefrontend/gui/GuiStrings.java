@@ -19,4 +19,6 @@ public class GuiStrings {
 	public static final String USER_PWD_LABEL = "Password:";
 	public static final String DB_CONN_FAIL = "Database connection failed!";
 	public static final String GET_DB_NAMES_FAIL = "Failed to get Databases!";
+	public static final String DEFAULT_COMBO_VALUE = "Select...";
+	public static final String SELECT_VALID_DB = "Select a valid Database!";
 }

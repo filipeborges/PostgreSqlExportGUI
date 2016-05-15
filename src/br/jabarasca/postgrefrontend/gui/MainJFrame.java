@@ -19,6 +19,8 @@ public class MainJFrame extends JFrame {
 	
 	private int screenStartX;
 	private int screenStartY;
+	
+	private JPanel currentScreenPanel; 
 	/**
 	 * Launch the application.
 	 */
@@ -64,12 +66,17 @@ public class MainJFrame extends JFrame {
 	}
 	
 	public void changeScreenPane(JPanel jpanel) {
+		currentScreenPanel = jpanel;
 		contentPane.removeAll();
 		contentPane.add(jpanel);
 		contentPane.revalidate(); 
 		contentPane.repaint();
 	}
 
+	public JPanel getCurrentScreenPanel() {
+		return currentScreenPanel;
+	}
+	
 	public int getCenterXStart(int componentWidth) {
 		return X_CENTER - (componentWidth/2);
 	}

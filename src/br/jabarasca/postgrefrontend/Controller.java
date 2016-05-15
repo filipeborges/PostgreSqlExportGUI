@@ -15,6 +15,7 @@ public class Controller {
 	private String connPort;
 	private String connUserName;
 	private String connPwdUser;
+	private DataBase db;
 	
 	public Controller(MainJFrame mainFrame, String address, String port, String userName, String pwdUser) {
 		connAddress = address;
@@ -26,11 +27,11 @@ public class Controller {
 	}
 	
 	public void connect() {
-		DataBase db = new DataBase(connAddress, connPort, connUserName, connPwdUser);
+		db = new DataBase(connAddress, connPort, connUserName, connPwdUser);
 		if(db.isDbConnEstablished()) {
 			List<String> dbNames = db.getAllDataBases();
 			if(dbNames != null) {
-				mainFrame.changeScreenPane(new SelectPanel(mainFrame, dbNames));
+				mainFrame.changeScreenPane(new SelectPanel(mainFrame, dbNames, this));
 				db.closeConnection();
 			} else {
 				mainFrame.setMessageDialog(GuiStrings.GET_DB_NAMES_FAIL);
@@ -38,5 +39,28 @@ public class Controller {
 		} else {
 			mainFrame.setMessageDialog(GuiStrings.DB_CONN_FAIL);
 		}
+	}
+	
+	public void export(String dbName) {
+		if(dbName.length() > 0) { 
+			db.connectToSpecificDB(dbName);
+			//List<String> dbTables = db.getAllTablesFromConnectedDB();
+			String outputScript = db.getTablesDDLFromConnectedDB();
+			SelectPanel selectPanel = (SelectPanel)mainFrame.getCurrentScreenPanel();
+			selectPanel.setTextAreaValue(outputScript);
+			db.closeConnection();
+		} else {
+			mainFrame.setMessageDialog(GuiStrings.SELECT_VALID_DB);
+		}
+	}
+	
+	private String getFormattedScript(List<String> scriptData) {
+		String formattedScript = "";
+		
+		for(int i = 0; i < scriptData.size(); i++) {
+			formattedScript += String.format("%s\n", scriptData.get(i));
+		}
+		
+		return formattedScript;
 	}
 }
