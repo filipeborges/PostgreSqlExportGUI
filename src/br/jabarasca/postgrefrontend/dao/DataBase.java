@@ -8,10 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataBase {
-
-	//http://stackoverflow.com/questions/23522400/how-to-connect-to-postgresql-server-to-query-the-database-names-list
 	
-	//Metodo getMetaData da classe Connection.
 	private Connection dbConn;
 	private String formatUrlServer = "jdbc:postgresql://%s:%s/?";
 	private String formatUrlDb = "jdbc:postgresql://%s:%s/%s";
@@ -89,20 +86,8 @@ public class DataBase {
 		}
 	}
 	
-	/*
-	 * CREATE TABLE <TABLE_NAME> (
-	 * 		<COLUMN_DEFINITIONS>,
-	 * 		<PRIMARY_KEY_CONSTRAINT>,
-	 * 		<FOREIGN_KEY_CONSTRAINT>
-	 * )
-	 * 
-	 * <COLUMN_NAME><DATATYPE>
-	 * 
-	 */
-	
 	public String getTablesDDLFromConnectedDB() {
-		final String COLUMN_DEFINITIONS_TAG = "<COL_DEF>";
-		String tableDefFormat = "CREATE TABLE %s (<>);";
+		final String TABLE_DDL_FORMAT = "CREATE TABLE %s (%s%s%s);\n\n";
 		String ddlScript = "";
 		String pkConstraintDDL;
 		String fkConstraintDDL;
@@ -111,19 +96,26 @@ public class DataBase {
 		List<String> allTables = getAllTablesFromConnectedDB();
 		if(allTables != null) {
 			for(int i = 0; i < allTables.size(); i++) {
-				pkConstraintDDL = getTablePKConstraintDef(allTables.get(i));
+				String tableName = allTables.get(i);
+				pkConstraintDDL = getTablePKConstraintDef(tableName);
 				if(pkConstraintDDL == null) {
 					return null;
 				} else {
-					fkConstraintDDL = getTableFKConstraintDef(allTables.get(i));
+					fkConstraintDDL = getTableFKConstraintDef(tableName);
 					if(fkConstraintDDL == null) {
 						return null;
 					} else {
-						columnsDDL = getTableColumnsDef(allTables.get(i));
+						columnsDDL = getTableColumnsDef(tableName);
 						if(columnsDDL == null) {
 							return null;
 						} else {
-							ddlScript += columnsDDL + ",\n" + pkConstraintDDL + ",\n" + fkConstraintDDL + "\n/\n";
+							if(pkConstraintDDL.length() > 0) {
+								pkConstraintDDL = ",\n" + pkConstraintDDL; 
+							}
+							if(fkConstraintDDL.length() > 0) {
+								fkConstraintDDL = ",\n" + fkConstraintDDL;
+							}
+							ddlScript += String.format(TABLE_DDL_FORMAT, tableName, columnsDDL, pkConstraintDDL, fkConstraintDDL);
 						}
 					}
 				}
@@ -220,12 +212,14 @@ public class DataBase {
 			ResultSet result = dbConn.prepareStatement(String.format(SQL_FK_INFO, tableName))
 					.executeQuery();
 			
-			for(int i = 0; result.next(); i++) {
-				if(i == 0) {
+			boolean isFirstRow = true;
+			while(result.next()) {
+				if(isFirstRow) {
+					isFirstRow = false;
 					tableDefFKs += String.format(FOREIGN_KEY_DEF_FORMAT, result.getString(1), result.getString(2),
 							result.getString(3), result.getString(4), result.getString(6), result.getString(5));
 				} else  {
-					tableDefFKs += ", " + String.format(FOREIGN_KEY_DEF_FORMAT, result.getString(1), result.getString(2),
+					tableDefFKs += ",\n" + String.format(FOREIGN_KEY_DEF_FORMAT, result.getString(1), result.getString(2),
 							result.getString(3), result.getString(4), result.getString(6), result.getString(5));
 				}
 			}
@@ -246,19 +240,25 @@ public class DataBase {
 												"AND upper(tb_cons.constraint_type) = 'PRIMARY KEY';";
 		
 		final String PK_CONSTRAINT_DEF = "CONSTRAINT %s PRIMARY KEY (%s)";
-		String tableDefPKs = "";
 		try {
 			ResultSet result = dbConn.prepareStatement(String.format(SQL_COLUMN_NAME_PK_TABLE, tableName))
 					.executeQuery();
-			for(int i = 0; result.next(); i++) {
-				if(i == 0) {
-					tableDefPKs += String.format(PK_CONSTRAINT_DEF, result.getString(2), result.getString(1));
+			
+			String pkColumns = "";
+			String constraintName = "";
+			boolean isFirstRow = true;
+			
+			while(result.next()) {
+				if(isFirstRow) {
+					isFirstRow = false;
+					constraintName = result.getString(2);
+					pkColumns += result.getString(1);
 				} else {
-					tableDefPKs += ", " + String.format(PK_CONSTRAINT_DEF, result.getString(2), result.getString(1));
+					pkColumns += ", " + result.getString(1);
 				}
 			}
 			
-			return tableDefPKs;
+			return String.format(PK_CONSTRAINT_DEF, constraintName, pkColumns);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
