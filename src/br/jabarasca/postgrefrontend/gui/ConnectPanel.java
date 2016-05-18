@@ -67,6 +67,7 @@ public class ConnectPanel extends JPanel {
 		lastYPosition += 80;
 		JLabel userNameLabel = new JLabel(GuiStrings.USER_NAME_LABEL);
 		userNameLabel.setBounds(lastXPosition, lastYPosition, 170, 15);
+		userNameLabel.setFont(new Font(GuiStrings.APP_FONT_STYLE, Font.BOLD, 14));
 		add(userNameLabel);
 		
 		lastXPosition += 170;
@@ -79,6 +80,7 @@ public class ConnectPanel extends JPanel {
 		lastYPosition += 50;
 		JLabel userPwdLabel = new JLabel(GuiStrings.USER_PWD_LABEL);
 		userPwdLabel.setBounds(lastXPosition, lastYPosition, 90, 15);
+		userPwdLabel.setFont(new Font(GuiStrings.APP_FONT_STYLE, Font.BOLD, 14));
 		add(userPwdLabel);
 		
 		lastXPosition += 98;

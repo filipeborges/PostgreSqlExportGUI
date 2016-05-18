@@ -22,4 +22,5 @@ public class GuiStrings {
 	public static final String DEFAULT_COMBO_VALUE = "Select...";
 	public static final String SELECT_VALID_DB = "Select a valid Database!";
 	public static final String EXPORT_DB_FAIL = "Error on export Database!";
+	public static final String LOAD_DIALOG_MESSAGE = "Generating script...";
 }

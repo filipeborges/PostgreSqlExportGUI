@@ -31,11 +31,15 @@ public class SelectPanel extends JPanel {
 	private JTextArea scriptTextArea;
 	private String dbNameSelected = "";
 	private Controller controller;
+	private LoadPopupDialog popDialog;
 	
 	public SelectPanel(MainJFrame mainFrame, List<String> dbNames, Controller controller) {
 		this.mainFrame = mainFrame;
 		this.controller = controller;
 		setLayout(null);
+		
+		popDialog = new LoadPopupDialog(mainFrame.getNativeScreenWidth(),
+					mainFrame.getNativeScreenHeight());
 		
 		lastYPosition = INITIAL_Y_START;
 		JLabel titleLabel = new JLabel(GuiStrings.SELECT_TITLE_LABEL);
@@ -63,6 +67,10 @@ public class SelectPanel extends JPanel {
 		setDbNames(dbNames);
 		setComboBoxListener();
 		setExportBtnListener();
+	}
+	
+	public void setLoadDialogVisible(boolean isVisible) {
+		popDialog.setVisible(isVisible);
 	}
 	
 	public void setTextAreaValue(String text) {
