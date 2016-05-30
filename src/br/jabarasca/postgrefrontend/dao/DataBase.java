@@ -85,9 +85,10 @@ public class DataBase {
 			return null;
 		}
 	}
-	
+
 	public String getTablesDDLFromConnectedDB() {
-		final String TABLE_DDL_FORMAT = "CREATE TABLE %s (%s%s%s);\n\n";
+		final String TABLE_DDL_FORMAT = "CREATE TABLE %s (%s%s);\n\n";
+		String ALTER_TABLE_DDL_FK = "ALTER TABLE %s\n%s;\n\n";
 		String ddlScript = "";
 		String pkConstraintDDL;
 		String fkConstraintDDL;
@@ -101,25 +102,28 @@ public class DataBase {
 				if(pkConstraintDDL == null) {
 					return null;
 				} else {
-					fkConstraintDDL = getTableFKConstraintDef(tableName);
-					if(fkConstraintDDL == null) {
+					columnsDDL = getTableColumnsDef(tableName);
+					if(columnsDDL == null) {
 						return null;
 					} else {
-						columnsDDL = getTableColumnsDef(tableName);
-						if(columnsDDL == null) {
-							return null;
-						} else {
-							if(pkConstraintDDL.length() > 0) {
-								pkConstraintDDL = ",\n" + pkConstraintDDL; 
-							}
-							if(fkConstraintDDL.length() > 0) {
-								fkConstraintDDL = ",\n" + fkConstraintDDL;
-							}
-							ddlScript += String.format(TABLE_DDL_FORMAT, tableName, columnsDDL, pkConstraintDDL, fkConstraintDDL);
+						if(pkConstraintDDL.length() > 0) {
+							pkConstraintDDL = ",\n" + pkConstraintDDL; 
 						}
+						ddlScript += String.format(TABLE_DDL_FORMAT, tableName, columnsDDL, pkConstraintDDL);
 					}
 				}
 			}
+			
+			for(int i = 0; i < allTables.size(); i++) {
+				String tableName = allTables.get(i);
+				fkConstraintDDL = getTableFKConstraintDef(tableName);
+				if(fkConstraintDDL == null) {
+					return null;
+				} else if(fkConstraintDDL.length() > 0) {
+					ddlScript += String.format(ALTER_TABLE_DDL_FK, tableName, fkConstraintDDL);
+				}
+			}
+			
 			return ddlScript;
 		} else {
 			return null;
@@ -149,9 +153,12 @@ public class DataBase {
 				}
 				
 				dataType = result.getString(2);
+				
+				defaultValue = null;
 				if(dataType.toUpperCase().contains("USER")) {
 					dataType = "varchar(255)";
-					defaultValue = null;
+				} else if(dataType.toUpperCase().contains("ARRAY")) {
+					dataType = "text[]";
 				} else {
 					if(dataType.toUpperCase().contains("CHAR")) {
 						dataType += "(" + result.getInt(4) + ")";
@@ -159,7 +166,8 @@ public class DataBase {
 					defaultValue = result.getString(5);
 				}
 				
-				if(defaultValue == null || defaultValue.contains("nextval")) {
+				if(defaultValue == null || defaultValue.toUpperCase().contains("NEXTVAL") 
+						|| defaultValue.length() == 0) {
 					defaultValue = "";
 				} else {
 					defaultValue = " DEFAULT " + defaultValue;
@@ -205,7 +213,7 @@ public class DataBase {
 									") AS subqry3 " +
 									"ON upper(ref_cons.constraint_name) = upper(subqry3.constraint_name);";
 
-		final String FOREIGN_KEY_DEF_FORMAT = "CONSTRAINT %s FOREIGN KEY (%s) REFERENCES %s (%s) ON DELETE %s ON UPDATE %s";
+		final String FOREIGN_KEY_DEF_FORMAT = "ADD CONSTRAINT %s FOREIGN KEY (%s) REFERENCES %s (%s) ON DELETE %s ON UPDATE %s";
 		String tableDefFKs = "";
 		
 		try {
@@ -257,8 +265,11 @@ public class DataBase {
 					pkColumns += ", " + result.getString(1);
 				}
 			}
-			
-			return String.format(PK_CONSTRAINT_DEF, constraintName, pkColumns);
+			if(pkColumns.length() > 0 && constraintName.length() > 0) {
+				return String.format(PK_CONSTRAINT_DEF, constraintName, pkColumns);
+			} else {
+				return "";
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;

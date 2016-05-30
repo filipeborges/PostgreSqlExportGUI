@@ -7,6 +7,7 @@ Limitations:
 
 - It only exports Table definitions.
 - Primary Key columns with DEFAULT value from sequence is exported with DEFAULT value equal NULL.
+- Primary Key constraint without a name is not exported.
+- Foreign Key constraint without a name is not exported.
 - Column with custom data type is exported with varchar(255).
-- Table DDLs is exported in random order, which may cause dependencies problem on script execution. Invidual execution of each DDL in right order solves this.
 
